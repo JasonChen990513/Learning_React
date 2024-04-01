@@ -1,6 +1,7 @@
-import 'bulma/css/bulma.css'
+//import 'bulma/css/bulma.css'
 import { useState } from 'react'
 import AnimalShow from './AnimalShow';
+import './App.css';
 
 function getRandomAnimal(){
     const animals = ['bird', 'cat', 'cow', 'dog', 'gator', 'horse'];
@@ -22,9 +23,9 @@ function App(){
     })
 
     return (
-        <div>
+        <div className='app'>
             <button className='button is-light' onClick={handleClick}>show animal list here</button>
-            <div>
+            <div className='animal-list'>
                 {renderAnimal}
             </div>
         </div>
