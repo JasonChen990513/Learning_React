@@ -1,27 +1,51 @@
 import { useState } from "react";
 import BookCreate from "./components/BookCreate";
 import BookList from "./components/BookList";
+import axios from "axios";
+import { useEffect } from "react";
 
 function App() {
     const [books, setBooks] = useState([]);
 
-    const createBook = (title) =>{
-        const updateBooks = [...books, {id: Math.round(Math.random()*9999), title,}];
+    const fetchBooks = async () =>{
+        const allRespone = await axios.get('http://localhost:3001/books');
+        console.log(allRespone.data);
+        setBooks(allRespone.data)
+    };
+
+    useEffect(()=>{
+        fetchBooks();
+    }, []);
+    //Do not do this, it will cause infinity loop
+    //fetchBooks();
+
+    const createBook = async (title) =>{
+
+        const respone = await axios.post('http://localhost:3001/books',{
+            title: title
+        });
+
+        const updateBooks = [...books, respone.data];
         console.log(updateBooks);
         setBooks(updateBooks);
     };
 
-    const deleteBookById = (id) => {
+    const deleteBookById = async (id) => {
+        await axios.delete(`http://localhost:3001/books/${id}`)
         const updateBooks = books.filter((book)=>{
             return book.id !== id;
         });
         setBooks(updateBooks);
     };
 
-    const editBookById = (id, newTitle) =>{
+    const editBookById = async (id, newTitle) =>{
+        const respone = await axios.put(`http://localhost:3001/books/${id}`,{
+            title: newTitle
+        })
+
         const updateBooks = books.map((book)=>{
             if(book.id === id){
-                return {...book, title: newTitle}
+                return {...book, ...respone.data}
             }
             return book;
         });
